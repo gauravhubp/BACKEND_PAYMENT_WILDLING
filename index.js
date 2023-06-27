@@ -27,4 +27,4 @@ app.post('/create-checkout-session', async (req, res) => {
   res.redirect(303, session.url);
 });
 
-app.listen(4242, () => console.log(`Listening on port !`));
+app.listen(4242 || process.env.PORT, () => console.log(`Listening on port !`));
