@@ -10,28 +10,12 @@ app.use(express.urlencoded({extended:true}))
 app.use(cors())
 let price=0;
 let cart;
-app.post("/price",async(req,res) =>
-{
-  cart=req.body.cart;
-console.log(cart);
-
-
-})
 
 
 
 app.post('/create-checkout-session', async (req, res) => {
   const line_items = [];
-  const cart = [{
-    title: 'prod_IHb8dX3ESy2kwk',
-    quantity: '2',
-    price : '900'
-}, {
-    title: 'prod_IFIIyTO0fHCfGx',
-    quantity: '2',
-    price: '633'
-}
-];
+  const cart =req.body.cart;
 
 
       for (let item of cart) {
