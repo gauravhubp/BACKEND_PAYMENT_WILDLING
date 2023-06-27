@@ -22,6 +22,17 @@ console.log(cart);
 
 app.post('/create-checkout-session', async (req, res) => {
   const line_items = [];
+  const cart = [{
+    title: 'prod_IHb8dX3ESy2kwk',
+    quantity: '2',
+    price : '900'
+}, {
+    title: 'prod_IFIIyTO0fHCfGx',
+    quantity: '2',
+    price: '633'
+}
+];
+
 
       for (let item of cart) {
           
