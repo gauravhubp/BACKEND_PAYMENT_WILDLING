@@ -9,29 +9,38 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors())
 let price=0;
-
-app.post("/",async(req,res) =>
+let line_items;
+app.post("/price",async(req,res) =>
 {
 const cart=req.body.cart;
 price=cart.map(item => item.price*item.quantity).reduce((total,value) => total+value,0)
 console.log(price);
+
+line_items =cart.map((item) => {
+  return {
+  price_data: {
+  currency: "inr",
+  product_data: {
+  name: item.title,
+  description: item.content,
+  metadata: {
+  id: item.id,
+  },
+  },
+  unit_amount: item.price * 100,
+  },
+  quantity: item.quantity,
+  };
+  });
+
+
 })
+
 
 
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price_data: {
-          currency: 'inr',
-          product_data: {
-            name: 'T-shirt',
-          },
-          unit_amount: price,
-        },
-        quantity: 1,
-      },
-    ],
+    line_items,
     mode: 'payment',
     success_url: 'http://localhost:4242/success',
     cancel_url: 'http://localhost:4242/cancel',
