@@ -10,6 +10,13 @@ app.use(express.urlencoded({extended:true}))
 app.use(cors())
 let price=0;
 
+app.post("/",async(req,res) =>
+{
+const cart=req.body.cart;
+price=cart.map(item => item.price*item.quantity).reduce((total,value) => total+value,0)
+console.log(price);
+})
+
 
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
@@ -20,7 +27,7 @@ app.post('/create-checkout-session', async (req, res) => {
           product_data: {
             name: 'T-shirt',
           },
-          unit_amount: 2000,
+          unit_amount: price,
         },
         quantity: 1,
       },
