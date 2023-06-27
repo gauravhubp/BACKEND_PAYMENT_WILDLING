@@ -1,67 +1,30 @@
-require('dotenv').config()
+// This example sets up an endpoint using the Express framework.
+// Watch this video to get started: https://youtu.be/rPR2aJ6XnAc.
 
-const app = require("express")();
-const path = require("path");
+const express = require('express');
+const app = express();
+const stripe = require('stripe')('sk_test_51NHPWGSAcfclqU9cSd5svYvzbHgh95kpn09wqMuPngVzy6iFkXIJyTFwPDfefLFIK3iZczrejWdrcOySaw36BdL500enej6SUd')
 
-const cors = require("cors");
+app.post('/create-checkout-session', async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price_data: {
+          currency: 'inr',
+          product_data: {
+            name: 'T-shirt',
+          },
+          unit_amount: 2000,
+        },
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: 'http://localhost:4242/success',
+    cancel_url: 'http://localhost:4242/cancel',
+  });
 
-const shortid = require("shortid");
-const Razorpay = require("razorpay");
-
-const express=require("express")
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.use(cors())
-let price=0;
-
-app.post("/",async(req,res) =>
-{
-const cart=req.body.cart;
-price=cart.map(item => item.price*item.quantity).reduce((total,value) => total+value,0)
-console.log(price);
-})
-
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
+  res.redirect(303, session.url);
 });
 
-app.use(cors());
-
-// Serving company logo
-app.get("/logo.png", (req, res) => {
-  res.sendFile(path.join(__dirname, "logo.png"));
-});
-
-
-
-app.post("/razorpay", async (req, res) => {
-  const payment_capture = 1;
-  const amount = price;
-  const currency = "INR";
-
-
-  const options = {
-    amount: amount * 100,
-    currency,
-    receipt: shortid.generate(),
-    payment_capture,
-  };
-
-  try {
-    const response = await razorpay.orders.create(options);
-    console.log(response);
-    res.json({
-      id: response.id,
-      currency: response.currency,
-      amount: response.amount,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.listen(1337 || process.env.PORT, () => {
-  console.log("Backend running at localhost:1337");
-});
+app.listen(process.env.port || 4242, () => console.log(`Listening on port !`));
