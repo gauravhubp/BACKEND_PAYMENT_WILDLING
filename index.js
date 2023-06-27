@@ -3,7 +3,7 @@
 
 const express = require('express');
 const app = express();
-const stripe = require('stripe')('sk_test_51NHPWGSAcfclqU9cSd5svYvzbHgh95kpn09wqMuPngVzy6iFkXIJyTFwPDfefLFIK3iZczrejWdrcOySaw36BdL500enej6SUd')
+const stripe = require('stripe')('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')
 
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
