@@ -5,6 +5,19 @@ const express = require('express');
 const app = express();
 const stripe = require('stripe')('sk_test_51NHPWGSAcfclqU9cSd5svYvzbHgh95kpn09wqMuPngVzy6iFkXIJyTFwPDfefLFIK3iZczrejWdrcOySaw36BdL500enej6SUd')
 
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+app.use(cors())
+let price=0;
+
+app.post("/",async(req,res) =>
+{
+const cart=req.body.cart;
+price=cart.map(item => item.price*item.quantity).reduce((total,value) => total+value,0)
+console.log(price);
+})
+
+
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -14,7 +27,7 @@ app.post('/create-checkout-session', async (req, res) => {
           product_data: {
             name: 'T-shirt',
           },
-          unit_amount: 2000,
+          unit_amount: price,
         },
         quantity: 1,
       },
