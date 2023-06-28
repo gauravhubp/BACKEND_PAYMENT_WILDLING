@@ -12,10 +12,10 @@ let price=0;
 
 
 
-let cart;
+
   app.post('/create-checkout-session', async (req, res) => {
-    cart=req.body.CART;
-    console.log(CART);
+    let cart=req.body.CART;
+    console.log(cart);
 
      
     const line_items = [];
