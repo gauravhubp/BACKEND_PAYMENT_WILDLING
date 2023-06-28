@@ -9,36 +9,42 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors())
 let price=0;
+
+
+
 let cart;
+  app.post('/create-checkout-session', async (req, res) => {
+    cart=req.body.cart;
+    console.log(cart);
 
+     
+    const line_items = [];
+    
 
-
-app.post('/create-checkout-session', async (req, res) => {
-  const line_items = [];
-  const cart =req.body.cart;
-
-
-      for (let item of cart) {
-          
-          line_items.push({
-              price_data: {
-                  currency: 'inr',
-                  product_data: {
-                      name: item.title,
-                  },
-                  unit_amount: item.price*100,
-              },
-              quantity: item.quantity,
-          });
-      }
-  const session = await stripe.checkout.sessions.create({
-    line_items,
-    mode: 'payment',
-    success_url: 'http://localhost:4242/success',
-    cancel_url: 'http://localhost:4242/cancel',
-  });
-
-  res.redirect(303, session.url);
+    for (let item of cart) {
+        
+        line_items.push({
+            price_data: {
+                currency: 'inr',
+                product_data: {
+                    name: item.title,
+                },
+                unit_amount: item.price*100,
+            },
+            quantity: item.quantity,
+        });
+    }
+const session = await stripe.checkout.sessions.create({
+  line_items,
+  mode: 'payment',
+  success_url: 'http://localhost:4242/success',
+  cancel_url: 'http://localhost:4242/cancel',
 });
+
+var redir = { redirect: session.url };
+        return res.json(redir);
+  });
+console.log(cart);
+
 
 app.listen(process.env.port || 4242, () => console.log(`Listening on port !`));
