@@ -14,8 +14,8 @@ let price=0;
 
 let cart;
   app.post('/create-checkout-session', async (req, res) => {
-    cart=req.body.cart;
-    console.log(cart);
+    cart=req.body.CART;
+    console.log(CART);
 
      
     const line_items = [];
@@ -40,11 +40,10 @@ const session = await stripe.checkout.sessions.create({
   success_url: 'http://localhost:3000/',
   cancel_url: 'http://localhost:3000/',
 });
-
+console.log(session)
 var redir = { redirect: session.url };
         return res.json(redir);
   });
-console.log(cart);
 
 
 app.listen(process.env.port || 4242, () => console.log(`Listening on port !`));
