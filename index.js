@@ -37,8 +37,8 @@ let price=0;
 const session = await stripe.checkout.sessions.create({
   line_items,
   mode: 'payment',
-  success_url: 'https://wildling-frontend.vercel.app/',
-  cancel_url: 'https://wildling-frontend.vercel.app/',
+  success_url: 'https://wildling.vercel.app/',
+  cancel_url: 'https://wildling.vercel.app/',
 });
 console.log(session)
 var redir = { redirect: session.url };
